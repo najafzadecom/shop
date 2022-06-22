@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateTransactionRequest;
 
 class TransactionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:transaction-list|transaction-create|transaction-edit|transaction-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:transaction-create', ['only' => ['create','store']]);
+        $this->middleware('permission:transaction-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:transaction-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class TransactionController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreTransactionRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreTransactionRequest $request)
+    public function store(StoreTransactionRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $transaction = Transaction::create($request->all());
+
+        if($transaction) {
+            return response()->json(['success' => true, 'data' => $transaction]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class TransactionController extends Controller
      *
      * @param  \App\Http\Requests\UpdateTransactionRequest  $request
      * @param  \App\Models\Transaction  $transaction
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
-        //
+        $update = $transaction->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $transaction]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

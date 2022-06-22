@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateCurrencyRequest;
 
 class CurrencyController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:currency-list|currency-create|currency-edit|currency-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:currency-create', ['only' => ['create','store']]);
+        $this->middleware('permission:currency-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:currency-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class CurrencyController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreCurrencyRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreCurrencyRequest $request)
+    public function store(StoreCurrencyRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $currency = Currency::create($request->all());
+
+        if($currency) {
+            return response()->json(['success' => true, 'data' => $currency]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class CurrencyController extends Controller
      *
      * @param  \App\Http\Requests\UpdateCurrencyRequest  $request
      * @param  \App\Models\Currency  $currency
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateCurrencyRequest $request, Currency $currency)
+    public function update(UpdateCurrencyRequest $request, Currency $currency): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $currency->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $currency]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

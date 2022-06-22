@@ -8,6 +8,13 @@ use App\Http\Requests\UpdatePaymentMethodRequest;
 
 class PaymentMethodController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:paymentMethod-list|paymentMethod-create|paymentMethod-edit|paymentMethod-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:paymentMethod-create', ['only' => ['create','store']]);
+        $this->middleware('permission:paymentMethod-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:paymentMethod-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class PaymentMethodController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StorePaymentMethodRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StorePaymentMethodRequest $request)
+    public function store(StorePaymentMethodRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $paymentMethod = PaymentMethod::create($request->all());
+
+        if($paymentMethod) {
+            return response()->json(['success' => true, 'data' => $paymentMethod]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class PaymentMethodController extends Controller
      *
      * @param  \App\Http\Requests\UpdatePaymentMethodRequest  $request
      * @param  \App\Models\PaymentMethod  $paymentMethod
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdatePaymentMethodRequest $request, PaymentMethod $paymentMethod)
+    public function update(UpdatePaymentMethodRequest $request, PaymentMethod $paymentMethod): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $paymentMethod->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $paymentMethod]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

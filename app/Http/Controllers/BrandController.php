@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateBrandRequest;
 
 class BrandController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:brand-list|brand-create|brand-edit|brand-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:brand-create', ['only' => ['create','store']]);
+        $this->middleware('permission:brand-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:brand-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class BrandController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreBrandRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreBrandRequest $request)
+    public function store(StoreBrandRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $brand = Brand::create($request->all());
+
+        if($brand) {
+            return response()->json(['success' => true, 'data' => $brand]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class BrandController extends Controller
      *
      * @param  \App\Http\Requests\UpdateBrandRequest  $request
      * @param  \App\Models\Brand  $brand
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateBrandRequest $request, Brand $brand)
+    public function update(UpdateBrandRequest $request, Brand $brand): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $brand->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $brand]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

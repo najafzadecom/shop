@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateReviewRequest;
 
 class ReviewController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:review-list|review-create|review-edit|review-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:review-create', ['only' => ['create','store']]);
+        $this->middleware('permission:review-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:review-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class ReviewController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreReviewRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreReviewRequest $request)
+    public function store(StoreReviewRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $review = Review::create($request->all());
+
+        if($review) {
+            return response()->json(['success' => true, 'data' => $review]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class ReviewController extends Controller
      *
      * @param  \App\Http\Requests\UpdateReviewRequest  $request
      * @param  \App\Models\Review  $review
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateReviewRequest $request, Review $review)
+    public function update(UpdateReviewRequest $request, Review $review): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $review->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $review]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

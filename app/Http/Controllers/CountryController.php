@@ -5,9 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Country;
 use App\Http\Requests\StoreCountryRequest;
 use App\Http\Requests\UpdateCountryRequest;
+use PHPUnit\Framework\Constraint\Count;
 
 class CountryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:country-list|country-create|country-edit|country-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:country-create', ['only' => ['create','store']]);
+        $this->middleware('permission:country-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:country-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +40,17 @@ class CountryController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreCountryRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreCountryRequest $request)
+    public function store(StoreCountryRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $country = Country::create($request->all());
+
+        if($country) {
+            return response()->json(['success' => true, 'data' => $country]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +80,17 @@ class CountryController extends Controller
      *
      * @param  \App\Http\Requests\UpdateCountryRequest  $request
      * @param  \App\Models\Country  $country
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateCountryRequest $request, Country $country)
+    public function update(UpdateCountryRequest $request, Country $country): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $country->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $country]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

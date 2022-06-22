@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateNotificationRequest;
 
 class NotificationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:notification-list|notification-create|notification-edit|notification-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:notification-create', ['only' => ['create','store']]);
+        $this->middleware('permission:notification-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:notification-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class NotificationController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreNotificationRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreNotificationRequest $request)
+    public function store(StoreNotificationRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $notification = Notification::create($request->all());
+
+        if($notification) {
+            return response()->json(['success' => true, 'data' => $notification]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class NotificationController extends Controller
      *
      * @param  \App\Http\Requests\UpdateNotificationRequest  $request
      * @param  \App\Models\Notification  $notification
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateNotificationRequest $request, Notification $notification)
+    public function update(UpdateNotificationRequest $request, Notification $notification): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $notification->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $notification]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

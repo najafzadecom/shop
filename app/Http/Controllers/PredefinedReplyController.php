@@ -8,6 +8,13 @@ use App\Http\Requests\UpdatePredefinedReplyRequest;
 
 class PredefinedReplyController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:predefinedReply-list|predefinedReply-create|predefinedReply-edit|predefinedReply-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:predefinedReply-create', ['only' => ['create','store']]);
+        $this->middleware('permission:predefinedReply-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:predefinedReply-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class PredefinedReplyController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StorePredefinedReplyRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StorePredefinedReplyRequest $request)
+    public function store(StorePredefinedReplyRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $predefinedReply = PredefinedReply::create($request->all());
+
+        if($predefinedReply) {
+            return response()->json(['success' => true, 'data' => $predefinedReply]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class PredefinedReplyController extends Controller
      *
      * @param  \App\Http\Requests\UpdatePredefinedReplyRequest  $request
      * @param  \App\Models\PredefinedReply  $predefinedReply
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdatePredefinedReplyRequest $request, PredefinedReply $predefinedReply)
+    public function update(UpdatePredefinedReplyRequest $request, PredefinedReply $predefinedReply): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $predefinedReply->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $predefinedReply]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

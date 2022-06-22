@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateArticleRequest;
 
 class ArticleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:article-list|article-create|article-edit|article-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:article-create', ['only' => ['create','store']]);
+        $this->middleware('permission:article-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:article-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class ArticleController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreArticleRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreArticleRequest $request)
+    public function store(StoreArticleRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $article = Article::create($request->all());
+
+        if($article) {
+            return response()->json(['success' => true, 'data' => $article]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class ArticleController extends Controller
      *
      * @param  \App\Http\Requests\UpdateArticleRequest  $request
      * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateArticleRequest $request, Article $article)
+    public function update(UpdateArticleRequest $request, Article $article): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $article->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $article]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

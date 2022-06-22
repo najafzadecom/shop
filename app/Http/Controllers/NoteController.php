@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateNoteRequest;
 
 class NoteController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:note-list|note-create|note-edit|note-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:note-create', ['only' => ['create','store']]);
+        $this->middleware('permission:note-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:note-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class NoteController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreNoteRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreNoteRequest $request)
+    public function store(StoreNoteRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $note = Note::create($request->all());
+
+        if($note) {
+            return response()->json(['success' => true, 'data' => $note]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class NoteController extends Controller
      *
      * @param  \App\Http\Requests\UpdateNoteRequest  $request
      * @param  \App\Models\Note  $note
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateNoteRequest $request, Note $note)
+    public function update(UpdateNoteRequest $request, Note $note): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $note->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $note]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

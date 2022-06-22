@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateOrderRequest;
 
 class OrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:order-list|order-create|order-edit|order-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:order-create', ['only' => ['create','store']]);
+        $this->middleware('permission:order-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:order-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class OrderController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreOrderRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreOrderRequest $request)
+    public function store(StoreOrderRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $order = Order::create($request->all());
+
+        if($order) {
+            return response()->json(['success' => true, 'data' => $order]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class OrderController extends Controller
      *
      * @param  \App\Http\Requests\UpdateOrderRequest  $request
      * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        //
+        $update = $order->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $order]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

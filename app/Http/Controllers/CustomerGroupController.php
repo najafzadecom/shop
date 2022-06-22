@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateCustomerGroupRequest;
 
 class CustomerGroupController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:customerGroup-list|customerGroup-create|customerGroup-edit|customerGroup-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:customerGroup-create', ['only' => ['create','store']]);
+        $this->middleware('permission:customerGroup-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:customerGroup-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class CustomerGroupController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreCustomerGroupRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreCustomerGroupRequest $request)
+    public function store(StoreCustomerGroupRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $customerGroup = CustomerGroup::create($request->all());
+
+        if($customerGroup) {
+            return response()->json(['success' => true, 'data' => $customerGroup]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class CustomerGroupController extends Controller
      *
      * @param  \App\Http\Requests\UpdateCustomerGroupRequest  $request
      * @param  \App\Models\CustomerGroup  $customerGroup
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateCustomerGroupRequest $request, CustomerGroup $customerGroup)
+    public function update(UpdateCustomerGroupRequest $request, CustomerGroup $customerGroup): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $customerGroup->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $customerGroup]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

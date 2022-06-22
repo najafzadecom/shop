@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateTaxRequest;
 
 class TaxController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:tax-list|tax-create|tax-edit|tax-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:tax-create', ['only' => ['create','store']]);
+        $this->middleware('permission:tax-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:tax-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class TaxController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreTaxRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreTaxRequest $request)
+    public function store(StoreTaxRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $tax = Tax::create($request->all());
+
+        if($tax) {
+            return response()->json(['success' => true, 'data' => $tax]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class TaxController extends Controller
      *
      * @param  \App\Http\Requests\UpdateTaxRequest  $request
      * @param  \App\Models\Tax  $tax
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateTaxRequest $request, Tax $tax)
+    public function update(UpdateTaxRequest $request, Tax $tax): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $tax->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $tax]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

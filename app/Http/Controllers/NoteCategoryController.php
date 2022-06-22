@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateNoteCategoryRequest;
 
 class NoteCategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:noteCategory-list|noteCategory-create|noteCategory-edit|noteCategory-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:noteCategory-create', ['only' => ['create','store']]);
+        $this->middleware('permission:noteCategory-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:noteCategory-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class NoteCategoryController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreNoteCategoryRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreNoteCategoryRequest $request)
+    public function store(StoreNoteCategoryRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $noteCategory = NoteCategory::create($request->all());
+
+        if($noteCategory) {
+            return response()->json(['success' => true, 'data' => $noteCategory]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class NoteCategoryController extends Controller
      *
      * @param  \App\Http\Requests\UpdateNoteCategoryRequest  $request
      * @param  \App\Models\NoteCategory  $noteCategory
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateNoteCategoryRequest $request, NoteCategory $noteCategory)
+    public function update(UpdateNoteCategoryRequest $request, NoteCategory $noteCategory): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $noteCategory->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $noteCategory]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

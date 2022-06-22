@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateSmsRequest;
 
 class SmsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:sms-list|sms-create|sms-edit|sms-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:sms-create', ['only' => ['create','store']]);
+        $this->middleware('permission:sms-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:sms-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class SmsController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreSmsRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreSmsRequest $request)
+    public function store(StoreSmsRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $sms = Sms::create($request->all());
+
+        if($sms) {
+            return response()->json(['success' => true, 'data' => $sms]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class SmsController extends Controller
      *
      * @param  \App\Http\Requests\UpdateSmsRequest  $request
      * @param  \App\Models\Sms  $sms
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateSmsRequest $request, Sms $sms)
+    public function update(UpdateSmsRequest $request, Sms $sms): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $sms->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $sms]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

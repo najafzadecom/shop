@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateNewsRequest;
 
 class NewsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:news-list|news-create|news-edit|news-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:news-create', ['only' => ['create','store']]);
+        $this->middleware('permission:news-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:news-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class NewsController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreNewsRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreNewsRequest $request)
+    public function store(StoreNewsRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $news = News::create($request->all());
+
+        if($news) {
+            return response()->json(['success' => true, 'data' => $news]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class NewsController extends Controller
      *
      * @param  \App\Http\Requests\UpdateNewsRequest  $request
      * @param  \App\Models\News  $news
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateNewsRequest $request, News $news)
+    public function update(UpdateNewsRequest $request, News $news): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $news->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $news]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

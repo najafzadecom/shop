@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateLanguageRequest;
 
 class LanguageController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:language-list|language-create|language-edit|language-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:language-create', ['only' => ['create','store']]);
+        $this->middleware('permission:language-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:language-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class LanguageController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreLanguageRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreLanguageRequest $request)
+    public function store(StoreLanguageRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $language = Language::create($request->all());
+
+        if($language) {
+            return response()->json(['success' => true, 'data' => $language]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -65,11 +78,17 @@ class LanguageController extends Controller
      *
      * @param  \App\Http\Requests\UpdateLanguageRequest  $request
      * @param  \App\Models\Language  $language
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateLanguageRequest $request, Language $language)
+    public function update(UpdateLanguageRequest $request, Language $language): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $language->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $language]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateServiceRequest;
 
 class ServiceController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:service-list|service-create|service-edit|service-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:service-create', ['only' => ['create','store']]);
+        $this->middleware('permission:service-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:service-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class ServiceController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreServiceRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreServiceRequest $request)
+    public function store(StoreServiceRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $service = Service::create($request->all());
+
+        if($service) {
+            return response()->json(['success' => true, 'data' => $service]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class ServiceController extends Controller
      *
      * @param  \App\Http\Requests\UpdateServiceRequest  $request
      * @param  \App\Models\Service  $service
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateServiceRequest $request, Service $service)
+    public function update(UpdateServiceRequest $request, Service $service): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $service->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $service]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

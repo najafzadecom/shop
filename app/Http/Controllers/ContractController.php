@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateContractRequest;
 
 class ContractController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:contract-list|contract-create|contract-edit|contract-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:contract-create', ['only' => ['create','store']]);
+        $this->middleware('permission:contract-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:contract-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class ContractController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreContractRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreContractRequest $request)
+    public function store(StoreContractRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $contract = Contract::create($request->all());
+
+        if($contract) {
+            return response()->json(['success' => true, 'data' => $contract]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class ContractController extends Controller
      *
      * @param  \App\Http\Requests\UpdateContractRequest  $request
      * @param  \App\Models\Contract  $contract
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateContractRequest $request, Contract $contract)
+    public function update(UpdateContractRequest $request, Contract $contract): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $contract->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $contract]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateRoleRequest;
 
 class RoleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:role-create', ['only' => ['create','store']]);
+        $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:role-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class RoleController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreRoleRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreRoleRequest $request)
     {
-        //
+        $role = Role::create($request->all());
+
+        if($role) {
+            return response()->json(['success' => true, 'data' => $role]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class RoleController extends Controller
      *
      * @param  \App\Http\Requests\UpdateRoleRequest  $request
      * @param  \App\Models\Role  $role
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateRoleRequest $request, Role $role)
+    public function update(UpdateRoleRequest $request, Role $role): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $role->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $role]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

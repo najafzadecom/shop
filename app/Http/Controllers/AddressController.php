@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateAddressRequest;
 
 class AddressController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:address-list|address-create|address-edit|address-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:address-create', ['only' => ['create','store']]);
+        $this->middleware('permission:address-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:address-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class AddressController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreAddressRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreAddressRequest $request)
+    public function store(StoreAddressRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $address = Address::create($request->all());
+
+        if($address) {
+            return response()->json(['success' => true, 'data' => $address]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class AddressController extends Controller
      *
      * @param  \App\Http\Requests\UpdateAddressRequest  $request
      * @param  \App\Models\Address  $address
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateAddressRequest $request, Address $address)
+    public function update(UpdateAddressRequest $request, Address $address): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $address->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $address]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

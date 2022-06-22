@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateExpenseCategoryRequest;
 
 class ExpenseCategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:expenseCategory-list|expenseCategory-create|expenseCategory-edit|expenseCategory-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:expenseCategory-create', ['only' => ['create','store']]);
+        $this->middleware('permission:expenseCategory-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:expenseCategory-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class ExpenseCategoryController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreExpenseCategoryRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreExpenseCategoryRequest $request)
+    public function store(StoreExpenseCategoryRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $expenseCategory = ExpenseCategory::create($request->all());
+
+        if($expenseCategory) {
+            return response()->json(['success' => true, 'data' => $expenseCategory]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class ExpenseCategoryController extends Controller
      *
      * @param  \App\Http\Requests\UpdateExpenseCategoryRequest  $request
      * @param  \App\Models\ExpenseCategory  $expenseCategory
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateExpenseCategoryRequest $request, ExpenseCategory $expenseCategory)
+    public function update(UpdateExpenseCategoryRequest $request, ExpenseCategory $expenseCategory): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $expenseCategory->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $expenseCategory]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

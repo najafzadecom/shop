@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateCityRequest;
 
 class CityController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:city-list|city-create|city-edit|city-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:city-create', ['only' => ['create','store']]);
+        $this->middleware('permission:city-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:city-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class CityController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreCityRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreCityRequest $request)
+    public function store(StoreCityRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $city = City::create($request->all());
+
+        if($city) {
+            return response()->json(['success' => true, 'data' => $city]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class CityController extends Controller
      *
      * @param  \App\Http\Requests\UpdateCityRequest  $request
      * @param  \App\Models\City  $city
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateCityRequest $request, City $city)
+    public function update(UpdateCityRequest $request, City $city): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $city->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $city]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

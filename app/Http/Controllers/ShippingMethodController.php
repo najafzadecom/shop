@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateShippingMethodRequest;
 
 class ShippingMethodController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:shippingMethod-list|shippingMethod-create|shippingMethod-edit|shippingMethod-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:shippingMethod-create', ['only' => ['create','store']]);
+        $this->middleware('permission:shippingMethod-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:shippingMethod-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class ShippingMethodController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreShippingMethodRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreShippingMethodRequest $request)
+    public function store(StoreShippingMethodRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $shippingMethod = ShippingMethod::create($request->all());
+
+        if($shippingMethod) {
+            return response()->json(['success' => true, 'data' => $shippingMethod]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class ShippingMethodController extends Controller
      *
      * @param  \App\Http\Requests\UpdateShippingMethodRequest  $request
      * @param  \App\Models\ShippingMethod  $shippingMethod
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateShippingMethodRequest $request, ShippingMethod $shippingMethod)
+    public function update(UpdateShippingMethodRequest $request, ShippingMethod $shippingMethod): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $shippingMethod->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $shippingMethod]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

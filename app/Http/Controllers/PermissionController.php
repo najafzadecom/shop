@@ -8,6 +8,13 @@ use App\Http\Requests\UpdatePermissionRequest;
 
 class PermissionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:permission-list|permission-create|permission-edit|permission-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:permission-create', ['only' => ['create','store']]);
+        $this->middleware('permission:permission-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:permission-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class PermissionController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StorePermissionRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StorePermissionRequest $request)
+    public function store(StorePermissionRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $permission = Permission::create($request->all());
+
+        if($permission) {
+            return response()->json(['success' => true, 'data' => $permission]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class PermissionController extends Controller
      *
      * @param  \App\Http\Requests\UpdatePermissionRequest  $request
      * @param  \App\Models\Permission  $permission
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdatePermissionRequest $request, Permission $permission)
+    public function update(UpdatePermissionRequest $request, Permission $permission): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $permission->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $permission]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

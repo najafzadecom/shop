@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateStoreRequest;
 
 class StoreController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:store-list|store-create|store-edit|store-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:store-create', ['only' => ['create','store']]);
+        $this->middleware('permission:store-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:store-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class StoreController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreStoreRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreStoreRequest $request)
+    public function store(StoreStoreRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $store = Store::create($request->all());
+
+        if($store) {
+            return response()->json(['success' => true, 'data' => $store]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class StoreController extends Controller
      *
      * @param  \App\Http\Requests\UpdateStoreRequest  $request
      * @param  \App\Models\Store  $store
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateStoreRequest $request, Store $store)
+    public function update(UpdateStoreRequest $request, Store $store): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $store->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $store]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

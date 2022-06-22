@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateProjectRequest;
 
 class ProjectController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:project-list|project-create|project-edit|project-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:project-create', ['only' => ['create','store']]);
+        $this->middleware('permission:project-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:project-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class ProjectController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreProjectRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreProjectRequest $request)
+    public function store(StoreProjectRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $project = Project::create($request->all());
+
+        if($project) {
+            return response()->json(['success' => true, 'data' => $project]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class ProjectController extends Controller
      *
      * @param  \App\Http\Requests\UpdateProjectRequest  $request
      * @param  \App\Models\Project  $project
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateProjectRequest $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $project->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $project]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

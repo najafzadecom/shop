@@ -8,6 +8,13 @@ use App\Http\Requests\UpdatePageRequest;
 
 class PageController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:page-list|page-create|page-edit|page-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:page-create', ['only' => ['create','store']]);
+        $this->middleware('permission:page-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:page-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class PageController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StorePageRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StorePageRequest $request)
+    public function store(StorePageRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $page = Page::create($request->all());
+
+        if($page) {
+            return response()->json(['success' => true, 'data' => $page]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class PageController extends Controller
      *
      * @param  \App\Http\Requests\UpdatePageRequest  $request
      * @param  \App\Models\Page  $page
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdatePageRequest $request, Page $page)
+    public function update(UpdatePageRequest $request, Page $page): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $page->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $page]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

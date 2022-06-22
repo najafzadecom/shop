@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateMenuRequest;
 
 class MenuController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:menu-list|menu-create|menu-edit|menu-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:menu-create', ['only' => ['create','store']]);
+        $this->middleware('permission:menu-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:menu-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class MenuController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreMenuRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreMenuRequest $request)
+    public function store(StoreMenuRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $menu = Menu::create($request->all());
+
+        if($menu) {
+            return response()->json(['success' => true, 'data' => $menu]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class MenuController extends Controller
      *
      * @param  \App\Http\Requests\UpdateMenuRequest  $request
      * @param  \App\Models\Menu  $menu
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateMenuRequest $request, Menu $menu)
+    public function update(UpdateMenuRequest $request, Menu $menu): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $menu->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $menu]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

@@ -12,8 +12,29 @@ class InvoiceResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
-        return parent::toArray($request);
+        return [
+            'data' => $this->collection->map(function($data) {
+                return [
+                    'id'                => $data->id
+                ];
+            }),
+            'meta' => [
+                'count' => $this->collection->count()
+            ]
+        ];
+    }
+
+    /**
+     * @param  Request  $request
+     * @return array
+     */
+
+    public function with($request): array
+    {
+        return [
+            'status'    => 200
+        ];
     }
 }

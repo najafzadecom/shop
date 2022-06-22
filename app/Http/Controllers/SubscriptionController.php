@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateSubscriptionRequest;
 
 class SubscriptionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:subscription-list|subscription-create|subscription-edit|subscription-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:subscription-create', ['only' => ['create','store']]);
+        $this->middleware('permission:subscription-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:subscription-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class SubscriptionController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreSubscriptionRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreSubscriptionRequest $request)
+    public function store(StoreSubscriptionRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $subscription = Subscription::create($request->all());
+
+        if($subscription) {
+            return response()->json(['success' => true, 'data' => $subscription]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class SubscriptionController extends Controller
      *
      * @param  \App\Http\Requests\UpdateSubscriptionRequest  $request
      * @param  \App\Models\Subscription  $subscription
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateSubscriptionRequest $request, Subscription $subscription)
+    public function update(UpdateSubscriptionRequest $request, Subscription $subscription): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $subscription->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $subscription]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

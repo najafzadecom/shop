@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateSettingRequest;
 
 class SettingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:setting-list|setting-create|setting-edit|setting-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:setting-create', ['only' => ['create','store']]);
+        $this->middleware('permission:setting-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:setting-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class SettingController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreSettingRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreSettingRequest $request)
+    public function store(StoreSettingRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $setting = Setting::create($request->all());
+
+        if($setting) {
+            return response()->json(['success' => true, 'data' => $setting]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class SettingController extends Controller
      *
      * @param  \App\Http\Requests\UpdateSettingRequest  $request
      * @param  \App\Models\Setting  $setting
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateSettingRequest $request, Setting $setting)
+    public function update(UpdateSettingRequest $request, Setting $setting): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $setting->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $setting]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

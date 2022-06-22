@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateStateRequest;
 
 class StateController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:state-list|state-create|state-edit|state-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:state-create', ['only' => ['create','store']]);
+        $this->middleware('permission:state-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:state-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class StateController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreStateRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreStateRequest $request)
+    public function store(StoreStateRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $state = State::create($request->all());
+
+        if($state) {
+            return response()->json(['success' => true, 'data' => $state]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class StateController extends Controller
      *
      * @param  \App\Http\Requests\UpdateStateRequest  $request
      * @param  \App\Models\State  $state
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateStateRequest $request, State $state)
+    public function update(UpdateStateRequest $request, State $state): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $state->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $state]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

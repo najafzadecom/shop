@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateMenuItemRequest;
 
 class MenuItemController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:menuItem-list|menuItem-create|menuItem-edit|menuItem-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:menuItem-create', ['only' => ['create','store']]);
+        $this->middleware('permission:menuItem-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:menuItem-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class MenuItemController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreMenuItemRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreMenuItemRequest $request)
+    public function store(StoreMenuItemRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $menuItem = MenuItem::create($request->all());
+
+        if($menuItem) {
+            return response()->json(['success' => true, 'data' => $menuItem]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class MenuItemController extends Controller
      *
      * @param  \App\Http\Requests\UpdateMenuItemRequest  $request
      * @param  \App\Models\MenuItem  $menuItem
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateMenuItemRequest $request, MenuItem $menuItem)
+    public function update(UpdateMenuItemRequest $request, MenuItem $menuItem): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $menuItem->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $menuItem]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

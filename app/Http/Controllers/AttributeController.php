@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateAttributeRequest;
 
 class AttributeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:attribute-list|attribute-create|attribute-edit|attribute-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:attribute-create', ['only' => ['create','store']]);
+        $this->middleware('permission:attribute-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:attribute-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class AttributeController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreAttributeRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreAttributeRequest $request)
+    public function store(StoreAttributeRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $attribute = Attribute::create($request->all());
+
+        if($attribute) {
+            return response()->json(['success' => true, 'data' => $attribute]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class AttributeController extends Controller
      *
      * @param  \App\Http\Requests\UpdateAttributeRequest  $request
      * @param  \App\Models\Attribute  $attribute
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateAttributeRequest $request, Attribute $attribute)
+    public function update(UpdateAttributeRequest $request, Attribute $attribute): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $attribute->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $attribute]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**

@@ -8,6 +8,13 @@ use App\Http\Requests\UpdateOrderStatusRequest;
 
 class OrderStatusController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:orderStatus-list|orderStatus-create|orderStatus-edit|orderStatus-delete', ['only' => ['index','store']]);
+        $this->middleware('permission:orderStatus-create', ['only' => ['create','store']]);
+        $this->middleware('permission:orderStatus-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:orderStatus-delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,11 +39,17 @@ class OrderStatusController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreOrderStatusRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreOrderStatusRequest $request)
+    public function store(StoreOrderStatusRequest $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $orderStatus = OrderStatus::create($request->all());
+
+        if($orderStatus) {
+            return response()->json(['success' => true, 'data' => $orderStatus]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -66,11 +79,17 @@ class OrderStatusController extends Controller
      *
      * @param  \App\Http\Requests\UpdateOrderStatusRequest  $request
      * @param  \App\Models\OrderStatus  $orderStatus
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateOrderStatusRequest $request, OrderStatus $orderStatus)
+    public function update(UpdateOrderStatusRequest $request, OrderStatus $orderStatus): \Illuminate\Http\JsonResponse
     {
-        //
+        $update = $orderStatus->update($request->all());
+
+        if($update) {
+            return response()->json(['success' => true, 'data' => $orderStatus]);
+        }
+
+        return response()->json(['success' => false]);
     }
 
     /**
