@@ -43,11 +43,11 @@ class ArticleController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Article $article)
+    public function show(Article $article): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $article]);
     }
 
     /**
@@ -77,10 +77,14 @@ class ArticleController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Article $article)
+    public function destroy(Article $article): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $article->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

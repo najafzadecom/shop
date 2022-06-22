@@ -43,11 +43,11 @@ class MenuController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Menu  $menu
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Menu $menu)
+    public function show(Menu $menu): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $menu]);
     }
 
     /**
@@ -79,8 +79,12 @@ class MenuController extends Controller
      * @param  \App\Models\Menu  $menu
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Menu $menu)
+    public function destroy(Menu $menu): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $menu->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

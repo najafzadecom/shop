@@ -43,11 +43,11 @@ class DistrictController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\District  $district
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(District $district)
+    public function show(District $district): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $district]);
     }
 
     /**
@@ -77,10 +77,14 @@ class DistrictController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\District  $district
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(District $district)
+    public function destroy(District $district): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $district->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

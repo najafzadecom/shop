@@ -43,11 +43,11 @@ class CurrencyController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Currency  $currency
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Currency $currency)
+    public function show(Currency $currency): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $currency]);
     }
 
     /**
@@ -77,10 +77,14 @@ class CurrencyController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Currency  $currency
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Currency $currency)
+    public function destroy(Currency $currency): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $currency->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

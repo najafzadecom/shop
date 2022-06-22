@@ -43,11 +43,11 @@ class ReviewController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Review  $review
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Review $review)
+    public function show(Review $review): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $review]);
     }
 
     /**
@@ -79,8 +79,12 @@ class ReviewController extends Controller
      * @param  \App\Models\Review  $review
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Review $review)
+    public function destroy(Review $review): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $review->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

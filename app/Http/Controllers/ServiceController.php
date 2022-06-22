@@ -43,11 +43,11 @@ class ServiceController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Service  $service
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Service $service)
+    public function show(Service $service): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $service]);
     }
 
     /**
@@ -79,8 +79,12 @@ class ServiceController extends Controller
      * @param  \App\Models\Service  $service
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Service $service)
+    public function destroy(Service $service): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $service->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

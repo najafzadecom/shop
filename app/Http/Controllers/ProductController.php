@@ -43,11 +43,11 @@ class ProductController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Product $product)
+    public function show(Product $product): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $product]);
     }
 
     /**
@@ -79,8 +79,12 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy(Product $product): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $product->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

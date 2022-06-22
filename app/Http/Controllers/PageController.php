@@ -43,11 +43,11 @@ class PageController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Page  $page
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Page $page)
+    public function show(Page $page): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $page]);
     }
 
     /**
@@ -79,8 +79,12 @@ class PageController extends Controller
      * @param  \App\Models\Page  $page
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Page $page)
+    public function destroy(Page $page): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $page->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

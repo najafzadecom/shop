@@ -43,13 +43,12 @@ class LanguageController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Language  $language
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Language $language)
+    public function show(Language $language): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $language]);
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -77,10 +76,14 @@ class LanguageController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Language  $language
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Language $language)
+    public function destroy(Language $language): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $language->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

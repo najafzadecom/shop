@@ -43,11 +43,11 @@ class ProjectController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Project  $project
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Project $project)
+    public function show(Project $project): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $project]);
     }
 
     /**
@@ -76,11 +76,15 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Project  $project
-     * @return \Illuminate\Http\Response
+     * @param \App\Models\Project $project
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Project $project)
+    public function destroy(Project $project): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $project->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

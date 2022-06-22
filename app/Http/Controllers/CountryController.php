@@ -43,11 +43,11 @@ class CountryController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Country  $country
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Country $country)
+    public function show(Country $country): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $country]);
     }
 
     /**
@@ -77,10 +77,14 @@ class CountryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Country  $country
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Country $country)
+    public function destroy(Country $country): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $country->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

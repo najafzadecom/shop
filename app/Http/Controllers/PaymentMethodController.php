@@ -43,11 +43,11 @@ class PaymentMethodController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\PaymentMethod  $paymentMethod
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(PaymentMethod $paymentMethod)
+    public function show(PaymentMethod $paymentMethod): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $paymentMethod]);
     }
 
     /**
@@ -79,8 +79,12 @@ class PaymentMethodController extends Controller
      * @param  \App\Models\PaymentMethod  $paymentMethod
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PaymentMethod $paymentMethod)
+    public function destroy(PaymentMethod $paymentMethod): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $paymentMethod->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

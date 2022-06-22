@@ -43,11 +43,11 @@ class TransactionController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Transaction  $transaction
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Transaction $transaction)
+    public function show(Transaction $transaction): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $transaction]);
     }
 
     /**
@@ -79,8 +79,12 @@ class TransactionController extends Controller
      * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Transaction $transaction)
+    public function destroy(Transaction $transaction): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $transaction->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

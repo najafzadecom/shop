@@ -43,11 +43,11 @@ class OrderStatusController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\OrderStatus  $orderStatus
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(OrderStatus $orderStatus)
+    public function show(OrderStatus $orderStatus): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $orderStatus]);
     }
 
     /**
@@ -79,8 +79,12 @@ class OrderStatusController extends Controller
      * @param  \App\Models\OrderStatus  $orderStatus
      * @return \Illuminate\Http\Response
      */
-    public function destroy(OrderStatus $orderStatus)
+    public function destroy(OrderStatus $orderStatus): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $orderStatus->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

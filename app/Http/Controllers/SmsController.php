@@ -43,11 +43,11 @@ class SmsController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Sms  $sms
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Sms $sms)
+    public function show(Sms $sms): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $sms]);
     }
 
     /**
@@ -79,8 +79,12 @@ class SmsController extends Controller
      * @param  \App\Models\Sms  $sms
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Sms $sms)
+    public function destroy(Sms $sms): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $sms->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

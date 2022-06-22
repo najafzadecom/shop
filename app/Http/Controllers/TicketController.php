@@ -43,11 +43,11 @@ class TicketController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Ticket  $ticket
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Ticket $ticket)
+    public function show(Ticket $ticket): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $ticket]);
     }
 
     /**
@@ -79,8 +79,12 @@ class TicketController extends Controller
      * @param  \App\Models\Ticket  $ticket
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Ticket $ticket)
+    public function destroy(Ticket $ticket): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $ticket->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

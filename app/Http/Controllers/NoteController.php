@@ -43,11 +43,11 @@ class NoteController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Note  $note
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Note $note)
+    public function show(Note $note): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $note]);
     }
 
     /**
@@ -79,8 +79,12 @@ class NoteController extends Controller
      * @param  \App\Models\Note  $note
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Note $note)
+    public function destroy(Note $note): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $note->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

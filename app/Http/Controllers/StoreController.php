@@ -43,11 +43,11 @@ class StoreController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Store  $store
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Store $store)
+    public function show(Store $store): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $store]);
     }
 
     /**
@@ -79,8 +79,12 @@ class StoreController extends Controller
      * @param  \App\Models\Store  $store
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Store $store)
+    public function destroy(Store $store): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $store->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

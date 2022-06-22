@@ -43,11 +43,11 @@ class OptionController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Option  $option
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Option $option)
+    public function show(Option $option): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $option]);
     }
 
     /**
@@ -79,8 +79,12 @@ class OptionController extends Controller
      * @param  \App\Models\Option  $option
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Option $option)
+    public function destroy(Option $option): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $option->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

@@ -43,11 +43,11 @@ class AttributeController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Attribute  $attribute
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Attribute $attribute)
+    public function show(Attribute $attribute): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $attribute]);
     }
 
     /**
@@ -77,10 +77,14 @@ class AttributeController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Attribute  $attribute
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Attribute $attribute)
+    public function destroy(Attribute $attribute): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $attribute->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

@@ -43,11 +43,11 @@ class ShippingMethodController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\ShippingMethod  $shippingMethod
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(ShippingMethod $shippingMethod)
+    public function show(ShippingMethod $shippingMethod): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $shippingMethod]);
     }
 
     /**
@@ -79,8 +79,12 @@ class ShippingMethodController extends Controller
      * @param  \App\Models\ShippingMethod  $shippingMethod
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ShippingMethod $shippingMethod)
+    public function destroy(ShippingMethod $shippingMethod): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $shippingMethod->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

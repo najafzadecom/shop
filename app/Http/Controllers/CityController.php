@@ -43,11 +43,11 @@ class CityController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\City  $city
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(City $city)
+    public function show(City $city): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $city]);
     }
 
     /**
@@ -77,10 +77,14 @@ class CityController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\City  $city
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(City $city)
+    public function destroy(City $city): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $city->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

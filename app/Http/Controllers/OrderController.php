@@ -43,11 +43,11 @@ class OrderController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Order $order)
+    public function show(Order $order): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $order]);
     }
 
     /**
@@ -79,8 +79,12 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Order $order)
+    public function destroy(Order $order): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $order->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

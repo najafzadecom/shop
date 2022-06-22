@@ -43,11 +43,11 @@ class SettingController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Setting  $setting
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Setting $setting)
+    public function show(Setting $setting): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $setting]);
     }
 
     /**
@@ -79,8 +79,12 @@ class SettingController extends Controller
      * @param  \App\Models\Setting  $setting
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Setting $setting)
+    public function destroy(Setting $setting): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $setting->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

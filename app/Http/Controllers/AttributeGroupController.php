@@ -43,11 +43,11 @@ class AttributeGroupController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\AttributeGroup  $attributeGroup
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(AttributeGroup $attributeGroup)
+    public function show(AttributeGroup $attributeGroup): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $attributeGroup]);
     }
 
     /**
@@ -77,10 +77,14 @@ class AttributeGroupController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\AttributeGroup  $attributeGroup
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(AttributeGroup $attributeGroup)
+    public function destroy(AttributeGroup $attributeGroup): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $attributeGroup->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

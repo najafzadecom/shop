@@ -43,11 +43,11 @@ class TaxController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Tax  $tax
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Tax $tax)
+    public function show(Tax $tax): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $tax]);
     }
 
     /**
@@ -79,8 +79,12 @@ class TaxController extends Controller
      * @param  \App\Models\Tax  $tax
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Tax $tax)
+    public function destroy(Tax $tax): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $tax->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

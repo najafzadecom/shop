@@ -43,11 +43,11 @@ class SubscriberController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Subscriber  $subscriber
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Subscriber $subscriber)
+    public function show(Subscriber $subscriber): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $subscriber]);
     }
 
     /**
@@ -79,8 +79,12 @@ class SubscriberController extends Controller
      * @param  \App\Models\Subscriber  $subscriber
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Subscriber $subscriber)
+    public function destroy(Subscriber $subscriber): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $subscriber->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

@@ -43,11 +43,11 @@ class CouponController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Coupon  $coupon
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Coupon $coupon)
+    public function show(Coupon $coupon): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $coupon]);
     }
 
     /**
@@ -77,10 +77,14 @@ class CouponController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Coupon  $coupon
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Coupon $coupon)
+    public function destroy(Coupon $coupon): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $coupon->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

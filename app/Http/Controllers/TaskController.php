@@ -43,11 +43,11 @@ class TaskController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Task $task)
+    public function show(Task $task): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $task]);
     }
 
     /**
@@ -79,8 +79,12 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Task $task)
+    public function destroy(Task $task): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $task->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

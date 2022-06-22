@@ -43,11 +43,11 @@ class NoteCategoryController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\NoteCategory  $noteCategory
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(NoteCategory $noteCategory)
+    public function show(NoteCategory $noteCategory): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $noteCategory]);
     }
 
     /**
@@ -79,8 +79,12 @@ class NoteCategoryController extends Controller
      * @param  \App\Models\NoteCategory  $noteCategory
      * @return \Illuminate\Http\Response
      */
-    public function destroy(NoteCategory $noteCategory)
+    public function destroy(NoteCategory $noteCategory): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $noteCategory->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

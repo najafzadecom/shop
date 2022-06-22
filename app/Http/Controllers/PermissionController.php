@@ -43,11 +43,11 @@ class PermissionController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Permission  $permission
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Permission $permission)
+    public function show(Permission $permission): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $permission]);
     }
 
     /**
@@ -79,8 +79,12 @@ class PermissionController extends Controller
      * @param  \App\Models\Permission  $permission
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Permission $permission)
+    public function destroy(Permission $permission): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $permission->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

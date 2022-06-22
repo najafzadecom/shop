@@ -43,11 +43,11 @@ class ExpenseCategoryController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\ExpenseCategory  $expenseCategory
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(ExpenseCategory $expenseCategory)
+    public function show(ExpenseCategory $expenseCategory): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $expenseCategory]);
     }
 
     /**
@@ -77,10 +77,14 @@ class ExpenseCategoryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\ExpenseCategory  $expenseCategory
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(ExpenseCategory $expenseCategory)
+    public function destroy(ExpenseCategory $expenseCategory): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $expenseCategory->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

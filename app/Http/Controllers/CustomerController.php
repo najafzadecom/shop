@@ -43,11 +43,11 @@ class CustomerController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Customer $customer)
+    public function show(Customer $customer): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $customer]);
     }
 
     /**
@@ -77,10 +77,14 @@ class CustomerController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Customer $customer)
+    public function destroy(Customer $customer): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $customer->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

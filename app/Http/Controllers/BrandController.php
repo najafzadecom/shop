@@ -43,11 +43,11 @@ class BrandController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Brand  $brand
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Brand $brand)
+    public function show(Brand $brand): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $brand]);
     }
 
     /**
@@ -77,10 +77,14 @@ class BrandController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Brand  $brand
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Brand $brand)
+    public function destroy(Brand $brand): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $brand->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

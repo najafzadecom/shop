@@ -43,11 +43,11 @@ class CategoryController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Category $category)
+    public function show(Category $category): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $category]);
     }
 
     /**
@@ -77,10 +77,14 @@ class CategoryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Category $category)
+    public function destroy(Category $category): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $category->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

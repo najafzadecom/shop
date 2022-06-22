@@ -43,11 +43,11 @@ class NotificationController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Notification  $notification
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Notification $notification)
+    public function show(Notification $notification): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $notification]);
     }
 
     /**
@@ -79,8 +79,12 @@ class NotificationController extends Controller
      * @param  \App\Models\Notification  $notification
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Notification $notification)
+    public function destroy(Notification $notification): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $notification->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

@@ -43,11 +43,11 @@ class NewsController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\News  $news
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(News $news)
+    public function show(News $news): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $news]);
     }
 
     /**
@@ -79,8 +79,12 @@ class NewsController extends Controller
      * @param  \App\Models\News  $news
      * @return \Illuminate\Http\Response
      */
-    public function destroy(News $news)
+    public function destroy(News $news): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $news->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

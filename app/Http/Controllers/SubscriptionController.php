@@ -43,11 +43,11 @@ class SubscriptionController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Subscription  $subscription
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Subscription $subscription)
+    public function show(Subscription $subscription): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $subscription]);
     }
 
     /**
@@ -79,8 +79,12 @@ class SubscriptionController extends Controller
      * @param  \App\Models\Subscription  $subscription
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Subscription $subscription)
+    public function destroy(Subscription $subscription): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $subscription->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

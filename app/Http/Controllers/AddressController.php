@@ -43,11 +43,11 @@ class AddressController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Address  $address
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Address $address)
+    public function show(Address $address): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $address]);
     }
 
     /**
@@ -77,10 +77,14 @@ class AddressController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Address  $address
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Address $address)
+    public function destroy(Address $address): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $address->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

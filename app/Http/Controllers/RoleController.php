@@ -43,11 +43,11 @@ class RoleController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Role  $role
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Role $role)
+    public function show(Role $role): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $role]);
     }
 
     /**
@@ -79,8 +79,12 @@ class RoleController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Role $role)
+    public function destroy(Role $role): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $role->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

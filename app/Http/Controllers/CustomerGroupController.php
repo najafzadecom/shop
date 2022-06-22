@@ -43,11 +43,11 @@ class CustomerGroupController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\CustomerGroup  $customerGroup
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(CustomerGroup $customerGroup)
+    public function show(CustomerGroup $customerGroup): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $customerGroup]);
     }
 
     /**
@@ -77,10 +77,14 @@ class CustomerGroupController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\CustomerGroup  $customerGroup
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(CustomerGroup $customerGroup)
+    public function destroy(CustomerGroup $customerGroup): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $customerGroup->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

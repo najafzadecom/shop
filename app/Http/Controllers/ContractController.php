@@ -43,11 +43,11 @@ class ContractController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Contract  $contract
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Contract $contract)
+    public function show(Contract $contract): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $contract]);
     }
 
     /**
@@ -77,10 +77,14 @@ class ContractController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Contract  $contract
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Contract $contract)
+    public function destroy(Contract $contract): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $contract->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

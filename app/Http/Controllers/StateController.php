@@ -43,11 +43,11 @@ class StateController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\State  $state
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(State $state)
+    public function show(State $state): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $state]);
     }
 
     /**
@@ -79,8 +79,12 @@ class StateController extends Controller
      * @param  \App\Models\State  $state
      * @return \Illuminate\Http\Response
      */
-    public function destroy(State $state)
+    public function destroy(State $state): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $state->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

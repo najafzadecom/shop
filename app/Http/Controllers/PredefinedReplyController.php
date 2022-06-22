@@ -43,11 +43,11 @@ class PredefinedReplyController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\PredefinedReply  $predefinedReply
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(PredefinedReply $predefinedReply)
+    public function show(PredefinedReply $predefinedReply): \Illuminate\Http\JsonResponse
     {
-        //
+        return response()->json(['success' => true, 'data' => $predefinedReply]);
     }
 
     /**
@@ -79,8 +79,12 @@ class PredefinedReplyController extends Controller
      * @param  \App\Models\PredefinedReply  $predefinedReply
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PredefinedReply $predefinedReply)
+    public function destroy(PredefinedReply $predefinedReply): \Illuminate\Http\JsonResponse
     {
-        //
+        $delete = $predefinedReply->delete();
+        if($delete) {
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }
